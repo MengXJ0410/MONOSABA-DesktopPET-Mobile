@@ -167,16 +167,16 @@ D:\Android\Sdk\platform-tools\adb.exe install -r release\MONOSABA-Mobile-0.1.0-d
 
 ## 性能说明
 
-- 默认 30fps，DPR 上限 2。
-- 贴图使用 `single-auto` LOD，按实际屏幕尺寸生成，降低显存占用。
+- 默认 30fps，DPR 按设备真实值渲染（上限 3）。
+- 使用本地 4096 贴图 + 完整 mipmap 链，缩小人物时也不会出现锯齿。
 - 只同时加载一个人物，切换时销毁旧模型。
 - App 切到后台时暂停渲染；设置 / 日记弹窗打开时暂停自动轮换。
 
-如果低端机仍然卡顿，可以继续把贴图降到 2048，或把 `pixiApp.ticker.maxFPS` 调到 24。
+如果低端机仍然卡顿，可以再把 DPR 上限降到 2，或把 `pixiApp.ticker.maxFPS` 调到 24。
 
 ## 素材与授权
 
-- Live2D 模型、图标、`voice/kiang.wav` 来自站点所有者提供的 JxmFUN 资源。
+- Live2D 模型、图标、`voice/kiang.wav` 来自 B 站 UP 主 **露姆娅**（UID: 1384755）；请遵守原作者的使用授权。
 - `public/live2d/core/live2dcubismcore.min.js` 是 Live2D Inc. 的 Redistributable Code，请保留同目录的 `NOTICE.txt`。
 - 模型资源不随本项目授予任何再分发许可；公开仓库 / 发布前请确认模型使用授权。
 

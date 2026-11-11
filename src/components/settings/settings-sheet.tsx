@@ -245,7 +245,7 @@ export function SettingsSheet({
             <span>
               {MOBILE_APP_NAME} · v{MOBILE_APP_VERSION}
             </span>
-            <span>Live2D 模型资源来自 JxmFUN。</span>
+            <span>Live2D 资源：B 站 UP 主露姆娅（UID:1384755）</span>
             <span>手机版专注 App 内陪伴，桌面专属功能未启用。</span>
           </section>
         </div>

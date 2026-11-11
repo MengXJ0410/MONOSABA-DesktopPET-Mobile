@@ -649,13 +649,19 @@ export function Companion({
         const pixiApp = new PIXI.Application();
         app = pixiApp;
         appRef.current = pixiApp;
+        // 手机屏幕 DPR 常见 2.625 / 3，之前固定 2 会把画布放大后变糊。
+        // 这里按真实 DPR 渲染（上限 3），配合 4096 贴图和 mipmap 保证清晰度。
+        const renderResolution = Math.min(
+          Math.max(window.devicePixelRatio || 1, 1),
+          3,
+        );
         await pixiApp.init({
           resizeTo: mount,
           backgroundAlpha: 0,
           autoDensity: true,
-          resolution: Math.min(window.devicePixelRatio || 1, 2),
+          resolution: renderResolution,
           preference: "webgl",
-          antialias: false,
+          antialias: true,
         });
         if (cancelled) {
           pixiApp.destroy(true);
@@ -674,8 +680,8 @@ export function Companion({
             autoFocus: false,
             autoHitTest: false,
             anchorMode: "drawable",
-            // 手机显存有限：按实际屏幕尺寸生成贴图，避免 4096 全量驻留。
-            textureOptions: { lod: "single-auto" },
+            // 资源是本地 4096 贴图，直接用完整 mipmap 链，缩小人物时也不会锯齿。
+            textureOptions: { lod: "full" },
           },
         );
         model = live2dModel;
