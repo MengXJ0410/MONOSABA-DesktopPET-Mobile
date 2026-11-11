@@ -30,7 +30,7 @@ finally {
 $apk = Join-Path $root "android\app\build\outputs\apk\debug\app-debug.apk"
 if (-not (Test-Path $apk)) { throw "找不到 APK：$apk" }
 
-$dist = Join-Path $root "dist"
+$dist = Join-Path $root "release"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
 $output = Join-Path $dist "MONOSABA-Mobile-0.1.0-debug.apk"
 Copy-Item $apk $output -Force
