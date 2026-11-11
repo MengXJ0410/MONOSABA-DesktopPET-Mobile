@@ -81,7 +81,8 @@ export default function App() {
   }, [character]);
 
   useEffect(() => {
-    persistScale(scale);
+    const timer = window.setTimeout(() => persistScale(scale), 250);
+    return () => window.clearTimeout(timer);
   }, [scale]);
 
   useEffect(() => {
