@@ -1,0 +1,88 @@
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--app-bg);
+}
+
+.settingsButton {
+  position: fixed;
+  left: calc(0.95rem + env(safe-area-inset-left, 0px));
+  bottom: calc(1.05rem + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  display: grid;
+  width: 3.7rem;
+  height: 3.7rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 0.14s ease,
+    opacity 0.18s ease;
+}
+
+.settingsButtonHidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.82);
+}
+
+.settingsButton img {
+  display: block;
+  width: 3.45rem;
+  height: 3.45rem;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 14px rgba(0, 0, 0, 0.38));
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.settingsButton:active {
+  transform: scale(0.9);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(5.9rem + env(safe-area-inset-bottom, 0px));
+  z-index: 80;
+  max-width: min(80vw, 18rem);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: var(--panel-bg);
+  color: var(--pet-text);
+  box-shadow: var(--panel-shadow);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: toast-in 0.2s ease-out;
+  backdrop-filter: blur(14px);
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settingsButton {
+    transition: none;
+  }
+
+  .toast {
+    animation: none;
+  }
+}

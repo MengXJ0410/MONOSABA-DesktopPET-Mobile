@@ -1,0 +1,90 @@
+/* 希罗：黑红；艾玛：白粉。手机端在此基础上增加了整屏背景和底部抽屉变量。 */
+:root[data-pet-character="hiro"] {
+  color-scheme: dark;
+  --app-bg: radial-gradient(
+    ellipse at 50% 16%,
+    #2b0b12 0%,
+    #12060a 42%,
+    #050304 100%
+  );
+  --app-vignette: radial-gradient(
+    circle at 50% 48%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
+  --accent: #d21f3c;
+  --accent-strong: #ff3350;
+  --accent-soft: rgba(210, 31, 60, 0.26);
+  --pet-text: #ffeef1;
+  --pet-muted: #c79aa4;
+  --pet-title: #ff6b7a;
+  --panel-bg: linear-gradient(
+    155deg,
+    rgba(24, 9, 13, 0.97),
+    rgba(6, 3, 4, 0.98)
+  );
+  --panel-border: rgba(210, 31, 60, 0.42);
+  --panel-shadow:
+    0 -12px 46px rgba(0, 0, 0, 0.58),
+    0 0 30px rgba(210, 31, 60, 0.16);
+  --button-bg: rgba(210, 31, 60, 0.08);
+  --button-border: rgba(210, 31, 60, 0.3);
+  --button-on-bg: rgba(210, 31, 60, 0.42);
+  --button-on-border: #ff6074;
+  --button-on-text: #fff8f9;
+  --slider-track: rgba(255, 255, 255, 0.14);
+  --row-border: rgba(255, 255, 255, 0.07);
+  --sheet-handle: rgba(255, 255, 255, 0.24);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --bubble-bg: rgba(12, 5, 8, 0.92);
+  --bubble-border: rgba(210, 31, 60, 0.55);
+  --bubble-text: #ffeef1;
+  --bubble-shadow: 0 12px 34px rgba(0, 0, 0, 0.48);
+  --loading-track: rgba(255, 255, 255, 0.16);
+  --danger: #ff5a68;
+}
+
+:root[data-pet-character="ema"] {
+  color-scheme: light;
+  --app-bg: radial-gradient(
+    ellipse at 50% 16%,
+    #fffafc 0%,
+    #ffe9f1 44%,
+    #ffd7e4 100%
+  );
+  --app-vignette: radial-gradient(
+    circle at 50% 48%,
+    transparent 38%,
+    rgba(194, 69, 110, 0.2) 100%
+  );
+  --accent: #e88aa8;
+  --accent-strong: #d94d7c;
+  --accent-soft: rgba(232, 138, 168, 0.26);
+  --pet-text: #4a1f2b;
+  --pet-muted: #8a5a68;
+  --pet-title: #b83b63;
+  --panel-bg: linear-gradient(
+    155deg,
+    rgba(255, 252, 253, 0.97),
+    rgba(255, 239, 246, 0.98)
+  );
+  --panel-border: rgba(232, 138, 168, 0.5);
+  --panel-shadow:
+    0 -12px 46px rgba(194, 69, 110, 0.18),
+    0 0 30px rgba(255, 183, 197, 0.2);
+  --button-bg: rgba(240, 138, 168, 0.12);
+  --button-border: rgba(232, 138, 168, 0.34);
+  --button-on-bg: rgba(240, 138, 168, 0.46);
+  --button-on-border: #c2456e;
+  --button-on-text: #3a1621;
+  --slider-track: rgba(194, 69, 110, 0.18);
+  --row-border: rgba(74, 31, 43, 0.08);
+  --sheet-handle: rgba(74, 31, 43, 0.2);
+  --input-bg: rgba(255, 255, 255, 0.65);
+  --bubble-bg: rgba(255, 250, 252, 0.95);
+  --bubble-border: rgba(232, 138, 168, 0.6);
+  --bubble-text: #4a1f2b;
+  --bubble-shadow: 0 12px 34px rgba(194, 69, 110, 0.2);
+  --loading-track: rgba(194, 69, 110, 0.16);
+  --danger: #c2183f;
+}

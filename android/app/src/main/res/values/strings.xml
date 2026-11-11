@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">魔女小屋</string>
+    <string name="title_activity_main">魔女小屋</string>
+    <string name="package_name">com.mengxj.monosaba.mobile</string>
+    <string name="custom_url_scheme">com.mengxj.monosaba.mobile</string>
+</resources>
