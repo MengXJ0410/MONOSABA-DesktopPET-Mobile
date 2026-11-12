@@ -1,11 +1,13 @@
 # 魔女小屋 / MONOSABA Mobile
 
-希罗 / 艾玛 Live2D 手机应用（Android 初版）。界面、模型和台词沿用桌面版 `MONOSABA-DesktopPET`，但不再做桌面桌宠，只在打开 App 时陪伴。
+希罗 / 艾玛 Live2D 手机应用。界面、模型和台词沿用桌面版 `MONOSABA-DesktopPET`，但不再做桌面桌宠，只在打开 App 时陪伴。
 
 - 应用名：**魔女小屋**
 - 包名：`com.mengxj.monosaba.mobile`
-- 版本：`0.1.0`
+- 版本：`0.2.0-beta`（versionCode 2）
 - 目标平台：Android 8.0+（minSdk 26），锁定竖屏
+
+配套应用 **魔女小屋钥匙**（`com.mengxj.monosaba.key`）负责只读访问服务器上的日记与记忆，两个 App 使用同一张私有 keystore 签名。
 
 ## 功能
 
@@ -19,6 +21,7 @@
 - **启动页 / 图标**：黑红「魔女小屋」启动图和花形应用图标。
 - **返回键**：先关日记 / 设置；在根界面双击返回退出。
 - **后台暂停**：切到后台暂停 Live2D 渲染，回前台恢复。
+- **日记 / 记忆**：希罗的设置里显示日记通道状态，经「魔女小屋钥匙」解锁后阅读日记与记忆（详见下文）。
 
 ## 与桌面版的差异
 
@@ -33,28 +36,34 @@
 | 窗口拖拽 / 位置记忆 | 静默 |
 | 显示 / 隐藏人物 | 静默 |
 | 拖动人物到屏幕任意位置 | 静默（人物固定在底部居中） |
+| 陀螺仪视线 | 静默 |
 
-手机端保留的模块：人物模型、切换人物、人物大小、自动轮换、点击表情 / 气泡 / 音效、待机视线、主题、自动保存。
+手机端保留的模块：人物模型、切换人物、人物大小、自动轮换、点击表情 / 气泡 / 音效、待机视线、主题、自动保存、日记 / 记忆。
 
 ## 日记 / 记忆
 
-初版只保留入口和接口，不连 SSH、不读服务器、不在手机上保存私钥。
+日记和记忆都由独立应用 **魔女小屋钥匙** 提供：钥匙用只读 SSH key 通过 SFTP 下载 `.md` / `.jsonl` 并在本地解析，主 App 只通过本机 HTTP（`127.0.0.1` + 随机端口 + token）取 JSON，私钥和服务器地址都不会进入 WebView。手机需要先加入和服务器相同的 EasyTier 网络。
 
-- 希罗的设置里点「偷看日记」会弹出咒语输入框。
-- 无论输入什么，提交后都会提示 **「希罗酱不想给你看日记」**。
-- 记忆入口不显示（记忆本来就需要先打开日记）。
-- 接口定义在 `src/lib/diary/gateway.ts`：
+- 设置里的「日记通道」显示 **已连接 / 未连接 / 已到期 / 未安装钥匙 / 签名不一致**，并带倒计时和「打开钥匙」按钮。
+- 钥匙每次连接 5 分钟，可手动 +5 分钟；从点击连接开始计时，到期自动断开。
+- 未连接时日记面板提示 **「希罗酱不想给你看日记」**。
+- 已连接后输入咒语 `hiro110`（输错会提示正确密钥）解锁；断线会立即清空内容并重新上锁。
+- 日记按「日记本.md」的卷号选择，超过 4 MB 只读最新部分。
+- 记忆只在切到记忆页时加载，按 6 路并行读取；钥匙进程内缓存 2 分钟，来回切换不会重复下载。
+
+原生桥在 `android/app/src/main/java/com/mengxj/monosaba/mobile/DiaryBridgePlugin.java`，JS 侧接口在 `src/lib/diary/gateway.ts`：
 
 ```ts
 type DiaryGateway = {
-  available(): Promise<boolean>;
+  channelStatus(): Promise<ChannelStatus>;
+  openConnector(): Promise<{ ok: boolean; error?: string }>;
   unlock(passphrase: string): Promise<UnlockResult>;
   loadDiary(book?: string | null): Promise<DiaryResult>;
   loadMemory(): Promise<MemoryResult>;
 };
 ```
 
-未来接入时新增一个 HTTP 实现（例如读取 `VITE_DIARY_API_BASE`），返回结构沿用 `DiaryPayload` / `MemoryPayload` 即可，UI 不需要改。手机端不建议直接跑 SSH。
+钥匙的状态通过 `signature` 权限的 ContentProvider 暴露，只有同签名的 App 能读取。
 
 ## 目录
 
@@ -62,11 +71,11 @@ type DiaryGateway = {
 src/
 ├─ components/
 │  ├─ companion/        # 全屏舞台、模型、点击、视线、气泡
-│  ├─ settings/         # 底部设置抽屉
-│  └─ diary/            # 日记咒语占位弹窗
+│  ├─ settings/         # 底部设置抽屉、日记通道状态
+│  └─ diary/            # 日记 / 记忆面板、咒语解锁
 ├─ content/live2d.ts    # 人物、台词、表情、缩放/轮换常量
 ├─ lib/live2d/          # 待机视线、点击音效规则
-├─ lib/diary/           # 日记接口占位
+├─ lib/diary/           # 原生桥封装、Markdown / JSONL 解析
 ├─ platform/
 │  ├─ features.ts       # 手机端功能开关（桌面功能静默处）
 │  └─ native.ts         # 状态栏、返回键、前后台、震动、竖屏
@@ -141,16 +150,27 @@ android/app/build/outputs/apk/debug/app-debug.apk
 `build-android.ps1` 会把它复制到：
 
 ```text
-release/MONOSABA-Mobile-0.1.0-debug.apk
+release/MONOSABA-Mobile-0.2.0-beta-debug.apk
 ```
+
+（版本号从 `package.json` 读取，APK 名自动同步。）
 
 安装到手机：
 
 ```powershell
-D:\Android\Sdk\platform-tools\adb.exe install -r release\MONOSABA-Mobile-0.1.0-debug.apk
+D:\Android\Sdk\platform-tools\adb.exe install -r release\MONOSABA-Mobile-0.2.0-beta-debug.apk
 ```
 
 首次安装需要在手机「开发者选项」里打开 USB 调试；也可以直接把 APK 发到手机安装。
+
+## 签名
+
+主 App 与「魔女小屋钥匙」必须使用同一张 keystore 签名，否则 ContentProvider 的 `signature` 权限会拒绝读取。
+
+- keystore：`D:\funtools\monosabapet\keystore\monosaba.jks`（密码在 `keystore.properties`，两个工程都通过 `local.properties` 引用，均已 gitignore）
+- 证书 SHA-256：`b260db1c52ef41a5cc90cb0a4d0475735adc172140e72705a2dda473365e3994`
+
+`0.1.0` 用的是另一套调试签名，安装新版前需要先卸载旧版；卸载会清空本地设置。
 
 ## 主题与持久化
 
@@ -182,7 +202,8 @@ D:\Android\Sdk\platform-tools\adb.exe install -r release\MONOSABA-Mobile-0.1.0-d
 
 ## 已知限制
 
-- 初版只做 Android；iOS 工程可以后续用 `npx cap add ios` 生成，但需要 macOS + Xcode 构建。
-- 日记 / 记忆只是占位，没有真实数据。
+- 只做 Android；iOS 工程可以后续用 `npx cap add ios` 生成，但需要 macOS + Xcode 构建。
+- 日记 / 记忆依赖「魔女小屋钥匙」，钥匙未连接或已到期时日记不可读。
 - 独占全屏游戏 / 系统级悬浮窗不属于本 App 的能力范围。
 - 手机端没有「常驻桌面」或「后台悬浮」模式，只有打开 App 时可见。
+- 部分国产系统（如 ColorOS）会限制后台前台服务，需要给钥匙关闭电池优化 / 允许自启动。

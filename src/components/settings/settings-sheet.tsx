@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   LIVE2D_CHARACTERS,
   LIVE2D_ROTATE_MAX_SECONDS,
@@ -11,9 +11,14 @@ import {
   LIVE2D_SIZE_STEP,
   MOBILE_APP_NAME,
   MOBILE_APP_VERSION,
+  MOBILE_CONNECTOR_NAME,
   type Live2DCharacterId,
   type Live2DRotateSettings,
 } from "@/content/live2d";
+import {
+  mobileDiaryGateway,
+  type ChannelStatus,
+} from "@/lib/diary/gateway";
 import { FEATURES } from "@/platform/features";
 
 import styles from "./settings-sheet.module.css";
@@ -31,6 +36,30 @@ type SettingsSheetProps = {
   onOpenDiary: () => void;
 };
 
+function formatRemaining(seconds: number) {
+  const safe = Math.max(0, Math.floor(seconds));
+  return `${String(Math.floor(safe / 60)).padStart(2, "0")}:${String(safe % 60).padStart(2, "0")}`;
+}
+
+function channelLabel(status: ChannelStatus | null) {
+  if (!status) return "检查中……";
+  if (status.connected) {
+    return `已连接 · ${formatRemaining(status.remainingSeconds)}`;
+  }
+  switch (status.state) {
+    case "notInstalled":
+      return "未安装钥匙";
+    case "expired":
+      return "已到期";
+    case "forbidden":
+      return "签名不一致";
+    case "unavailable":
+      return "读取失败";
+    default:
+      return "未连接";
+  }
+}
+
 export function SettingsSheet({
   open,
   character,
@@ -44,6 +73,8 @@ export function SettingsSheet({
   onOpenDiary,
 }: SettingsSheetProps) {
   const closeRef = useRef<HTMLButtonElement | null>(null);
+  const [channel, setChannel] = useState<ChannelStatus | null>(null);
+  const [connectorError, setConnectorError] = useState<string | null>(null);
   const profile = LIVE2D_CHARACTERS[character];
   const nextId: Live2DCharacterId = character === "hiro" ? "ema" : "hiro";
   const nextProfile = LIVE2D_CHARACTERS[nextId];
@@ -66,6 +97,29 @@ export function SettingsSheet({
     document.addEventListener("keydown", onKeyDown, true);
     return () => document.removeEventListener("keydown", onKeyDown, true);
   }, [onClose, open]);
+
+  // 设置面板打开期间轮询钥匙状态，让「日记通道」实时反映连接 / 倒计时。
+  useEffect(() => {
+    if (!open) return;
+    let active = true;
+    setConnectorError(null);
+    const check = async () => {
+      const next = await mobileDiaryGateway.channelStatus();
+      if (active) setChannel(next);
+    };
+    void check();
+    const timer = window.setInterval(() => void check(), 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [open]);
+
+  const openConnector = async () => {
+    setConnectorError(null);
+    const result = await mobileDiaryGateway.openConnector();
+    if (!result.ok) setConnectorError(result.error ?? "打不开钥匙。");
+  };
 
   if (!open) return null;
 
@@ -225,6 +279,39 @@ export function SettingsSheet({
 
           {FEATURES.diary && character === "hiro" ? (
             <section className={styles.section}>
+              <div className={styles.channelRow}>
+                <span
+                  className={`${styles.channelDot}${
+                    channel?.connected ? ` ${styles.channelDotOn}` : ""
+                  }`}
+                  aria-hidden="true"
+                />
+                <span className={styles.channelLabel}>
+                  日记通道
+                  <b
+                    className={
+                      channel?.connected
+                        ? styles.channelValueOn
+                        : styles.channelValue
+                    }
+                  >
+                    {channelLabel(channel)}
+                  </b>
+                </span>
+                <button
+                  type="button"
+                  className={styles.channelButton}
+                  onClick={() => void openConnector()}
+                >
+                  打开钥匙
+                </button>
+              </div>
+              {connectorError || channel?.error ? (
+                <p className={styles.channelError} role="alert">
+                  {connectorError ?? channel?.error}
+                </p>
+              ) : null}
+
               <button
                 type="button"
                 className={styles.diaryButton}
@@ -232,7 +319,11 @@ export function SettingsSheet({
               >
                 <span className={styles.diaryText}>
                   <span className={styles.label}>偷看日记</span>
-                  <span className={styles.hint}>希罗好像把日记藏起来了。</span>
+                  <span className={styles.hint}>
+                    {channel?.connected
+                      ? "钥匙已插好，希罗的日记本可以打开了。"
+                      : `先用「${MOBILE_CONNECTOR_NAME}」连接服务器。`}
+                  </span>
                 </span>
                 <span className={styles.chevron} aria-hidden="true">
                   →
@@ -246,6 +337,7 @@ export function SettingsSheet({
               {MOBILE_APP_NAME} · v{MOBILE_APP_VERSION}
             </span>
             <span>Live2D 资源：B 站 UP 主露姆娅（UID:1384755）</span>
+            <span>日记与记忆经「{MOBILE_CONNECTOR_NAME}」只读访问，每次连接 5 分钟。</span>
             <span>手机版专注 App 内陪伴，桌面专属功能未启用。</span>
           </section>
         </div>

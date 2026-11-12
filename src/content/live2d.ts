@@ -1,7 +1,9 @@
 export const LIVE2D_CORE_PATH = "/live2d/core/live2dcubismcore.min.js";
 
 export const MOBILE_APP_NAME = "魔女小屋";
-export const MOBILE_APP_VERSION = "0.1.0";
+export const MOBILE_APP_VERSION = "0.2.0-beta";
+export const MOBILE_CONNECTOR_NAME = "魔女小屋钥匙";
+export const MOBILE_CONNECTOR_PACKAGE = "com.mengxj.monosaba.key";
 
 // 默认加载 4096 WebP 模型（贴图约 1-2MB）。
 export type Live2DCharacterId = "hiro" | "ema";
@@ -108,6 +110,9 @@ export const LIVE2D_IDLE_GAZE_SACCADE_MAX_MS = 220;
 export const LIVE2D_CLICK_HOLD_MS = 6000;
 
 export const DIARY_PLACEHOLDER_MESSAGE = "希罗酱不想给你看日记";
+/** 和桌面端相同的日记咒语；输错时直接把正确值显示出来。 */
+export const DIARY_PASSPHRASE = "hiro110";
+export const DIARY_PASSPHRASE_HINT = `咒语不对。正确密钥是 ${DIARY_PASSPHRASE}。`;
 
 export const LIVE2D_GREETINGS: readonly string[] = [
   "唉？你来了。既然来了，就好好看看这里，别到处乱走。",

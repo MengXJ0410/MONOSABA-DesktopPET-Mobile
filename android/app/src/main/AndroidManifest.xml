@@ -4,6 +4,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -34,4 +35,6 @@
     <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 读取「魔女小屋钥匙」的连接状态；signature 级权限要求两边同签名。 -->
+    <uses-permission android:name="com.mengxj.monosaba.key.permission.STATUS" />
 </manifest>

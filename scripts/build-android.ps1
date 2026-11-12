@@ -30,9 +30,12 @@ finally {
 $apk = Join-Path $root "android\app\build\outputs\apk\debug\app-debug.apk"
 if (-not (Test-Path $apk)) { throw "找不到 APK：$apk" }
 
+$appVersion = (node -p "require('./package.json').version").Trim()
+if (-not $appVersion) { throw "读取 package.json 版本失败" }
+
 $dist = Join-Path $root "release"
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
-$output = Join-Path $dist "MONOSABA-Mobile-0.1.0-debug.apk"
+$output = Join-Path $dist "MONOSABA-Mobile-$appVersion-debug.apk"
 Copy-Item $apk $output -Force
 
 Write-Host ""

@@ -32,10 +32,10 @@ export const FEATURES = {
   pinchZoom: true,
   /** 点击震动。 */
   haptics: true,
-  /** 日记入口（初版为占位）。 */
+  /** 日记入口。 */
   diary: true,
-  /** 记忆入口（初版不提供）。 */
-  memory: false,
+  /** 记忆入口（在日记面板底部切换）。 */
+  memory: true,
 } as const;
 
 export type FeatureName = keyof typeof FEATURES;

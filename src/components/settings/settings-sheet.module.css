@@ -310,6 +310,81 @@
   grid-column: 1 / -1;
 }
 
+.channelRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid var(--row-border);
+  border-radius: 14px;
+  margin-bottom: 0.65rem;
+  background: color-mix(in srgb, var(--button-bg) 60%, transparent);
+}
+
+.channelDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--pet-muted);
+  opacity: 0.55;
+}
+
+.channelDotOn {
+  background: #48d17a;
+  opacity: 1;
+  box-shadow: 0 0 0 3px rgba(72, 209, 122, 0.18);
+}
+
+.channelLabel {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--pet-muted);
+  font-size: 0.72rem;
+}
+
+.channelValue,
+.channelValueOn {
+  color: var(--pet-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.channelValueOn {
+  color: #48d17a;
+}
+
+.channelButton {
+  flex: none;
+  height: 2rem;
+  padding: 0 0.7rem;
+  border: 1px solid var(--button-border);
+  border-radius: 999px;
+  background: var(--button-bg);
+  color: var(--accent-strong);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.channelButton:active {
+  border-color: var(--button-on-border);
+  background: var(--button-on-bg);
+  color: var(--button-on-text);
+}
+
+.channelError {
+  margin: 0 0 0.6rem;
+  color: var(--danger);
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
 .diaryButton {
   min-height: 3.6rem;
 }

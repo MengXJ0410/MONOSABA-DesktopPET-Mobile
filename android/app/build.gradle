@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
+}
+
 android {
     namespace = "com.mengxj.monosaba.mobile"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +13,8 @@ android {
         applicationId "com.mengxj.monosaba.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "0.1.0"
+        versionCode 2
+        versionName "0.2.0-beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,11 +22,42 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+
+    signingConfigs {
+        shared {
+            if (localProps.getProperty("monosaba.storeFile")) {
+                storeFile file(localProps.getProperty("monosaba.storeFile"))
+                storePassword localProps.getProperty("monosaba.storePassword")
+                keyAlias localProps.getProperty("monosaba.keyAlias")
+                keyPassword localProps.getProperty("monosaba.keyPassword")
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            // 和「魔女小屋钥匙」共用同一个签名，signature 权限才能生效。
+            if (localProps.getProperty("monosaba.storeFile")) {
+                signingConfig signingConfigs.shared
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (localProps.getProperty("monosaba.storeFile")) {
+                signingConfig signingConfigs.shared
+            }
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        encoding 'UTF-8'
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
     }
 }
 

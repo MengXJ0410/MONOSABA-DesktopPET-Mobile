@@ -1,6 +1,6 @@
 {
   "name": "monosaba-mobile",
-  "version": "0.1.0",
+  "version": "0.2.0-beta",
   "private": true,
   "description": "魔女小屋 - MONOSABA Mobile（希罗 / 艾玛 Live2D 手机应用）",
   "author": "MengXJ0410",
@@ -28,6 +28,8 @@
     "pixi.js": "^8.23.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "untitled-pixi-live2d-engine": "^1.4.0"
   },
   "devDependencies": {

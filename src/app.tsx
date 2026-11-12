@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Companion } from "@/components/companion/companion";
-import { DiaryGate } from "@/components/diary/diary-gate";
+import { DiaryPanel } from "@/components/diary/diary-panel";
 import { SettingsSheet } from "@/components/settings/settings-sheet";
 import {
   LIVE2D_CHARACTERS,
@@ -217,7 +217,7 @@ export default function App() {
         onOpenDiary={openDiary}
       />
 
-      <DiaryGate open={diaryOpen} onClose={closeDiary} />
+      <DiaryPanel open={diaryOpen} onClose={closeDiary} />
 
       {toast ? (
         <div className={styles.toast} role="status" aria-live="polite">
